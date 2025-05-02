@@ -1,34 +1,34 @@
 package com.example.fungame
 
+// ...
+
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fungame.ui.theme.FunGameTheme
+import kotlin.random.Random
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material3.Button
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-// ...
 
 @Composable
 fun OnboardingScreen(
@@ -38,7 +38,7 @@ fun OnboardingScreen(
     var shouldShowOnboarding by remember { mutableStateOf(true) }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        //modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -63,6 +63,7 @@ fun OnboardingPreview() {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             FunGameTheme {
@@ -72,16 +73,35 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun generateRandomIntegers(n: Int, rangeStart: Int = 2, rangeEnd: Int = 14): List<Int> {
+    return List(n) { Random.nextInt(rangeStart, rangeEnd + 1) }
+}
+
+fun intToString(n: Int): String {
+    val stringArray = arrayOf("J","Q","K","A")
+    if(n > 0 && n <=10) {
+        return "$n"
+    }
+    else return stringArray[n-11];
+}
+
+
 @Composable
 fun MyApp(modifier: Modifier = Modifier){
+
+    var mappingFun: (Int) -> String = {num -> intToString(num) }
     var shouldShowOnboarding by remember {mutableStateOf(true)}
       Surface(modifier)
       {
-          if(shouldShowOnboarding){
-              OnboardingScreen(onContinueClicked = {shouldShowOnboarding = false})
-          }
-          else {
-              Greetings()
+          Column(modifier = Modifier.padding((24.dp))) {
+
+              OnboardingScreen(onContinueClicked = { shouldShowOnboarding = !shouldShowOnboarding})
+              if(shouldShowOnboarding) {
+
+                  val mylist: List<String> = generateRandomIntegers(4).map(mappingFun)
+
+                  Greetings(names=mylist)
+              }
           }
       }
     }
@@ -93,20 +113,22 @@ private fun Greetings(
 ) {
     Column(modifier = modifier.padding(vertical = 4.dp)) {
         for (name in names) {
-            Greeting(name = name)
+            Card(name = name)
         }
     }
 }
 
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Card(name: String, modifier: Modifier = Modifier) {
     val expanded = remember {mutableStateOf(false)}
     val extrapadding = if (expanded.value) 48.dp else 0.dp
     Surface(color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical=4.dp,horizontal=8.dp)) {
         Row(modifier = Modifier.padding((24.dp))) {
-            Column(modifier = modifier.weight(1f).padding(bottom = extrapadding))
+            Column(modifier = modifier
+                .weight(1f)
+                .padding(bottom = extrapadding))
             {
                 Text(
                     text = "Hello ",
