@@ -10,8 +10,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -159,7 +161,7 @@ private fun Greetings(
     }
 
 
-    Column(modifier = modifier.padding(vertical = 4.dp)) {
+    Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 25.dp)) {
         for (name in names) {
             Card(name = name)
         }
@@ -175,18 +177,22 @@ fun Card(name: String, modifier: Modifier = Modifier) {
         modifier = modifier.padding(vertical=4.dp,horizontal=8.dp)) {
         Row(modifier = Modifier.padding((24.dp))) {
             Column(modifier = modifier
-                .weight(1f)
+                //.weight(1f)
                 .padding(bottom = extrapadding))
+
             {
                 Text(
                     text = "Hello ",
                 )
-                Text(text = name)
+                Text(text = "       $name")
             }
+            /*
+            Spacer(modifier = Modifier.width(8.dp))
             ElevatedButton(onClick = {expanded.value = !expanded.value})
             {
                 Text(if (expanded.value) "Show less" else "Show more")
             }
+            */
         }
     }
 }
