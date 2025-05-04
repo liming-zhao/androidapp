@@ -17,6 +17,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.fungame.ui.theme.FunGameTheme
+import net.objecthunter.exp4j.ExpressionBuilder
 import kotlin.random.Random
 
 
@@ -86,11 +88,24 @@ fun intToString(n: Int): String {
 }
 
 
+fun evaluateMathExpression(expression: String): Double? {
+    return try {
+        val exp = ExpressionBuilder(expression).build()
+        exp.evaluate()
+    } catch (e: Exception) {
+        null
+    }
+}
+
 @Composable
 fun MyApp(modifier: Modifier = Modifier){
 
     var mappingFun: (Int) -> String = {num -> intToString(num) }
     var shouldShowOnboarding by remember {mutableStateOf(true)}
+    var text by remember { mutableStateOf("Hello") }
+    var result by remember { mutableStateOf(false) }
+
+
       Surface(modifier)
       {
           Column(modifier = Modifier.padding((24.dp))) {
@@ -98,9 +113,26 @@ fun MyApp(modifier: Modifier = Modifier){
               OnboardingScreen(onContinueClicked = { shouldShowOnboarding = !shouldShowOnboarding})
               if(shouldShowOnboarding) {
 
+
+
                   val mylist: List<String> = generateRandomIntegers(4).map(mappingFun)
 
-                  Greetings(names=mylist)
+                  if(result) {
+                      Text(
+                          text = "correct ",
+                      )
+                  }
+
+                  Greetings(
+                      names=mylist,
+                      text=text,
+                      onTextChange = { text = it},
+                      onClick = {
+                          result = ( (24.0 == evaluateMathExpression(text)) )
+
+                      }
+                      )
+
               }
           }
       }
@@ -109,8 +141,24 @@ fun MyApp(modifier: Modifier = Modifier){
 @Composable
 private fun Greetings(
     modifier: Modifier = Modifier,
-    names: List<String> = listOf("World", "Compose")
+    names: List<String> = listOf("World", "Compose"),
+    text:String,
+    onTextChange:(String)->Unit,
+    onClick: ()->Unit
 ) {
+   // var text by remember { mutableStateOf("Hello") }
+
+    TextField(
+        value = text,
+        onValueChange = onTextChange,
+        label = {Text("Label")}
+    )
+
+    Button(onClick = onClick){
+        Text("Check")
+    }
+
+
     Column(modifier = modifier.padding(vertical = 4.dp)) {
         for (name in names) {
             Card(name = name)
@@ -149,7 +197,7 @@ fun Card(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     FunGameTheme {
-        Greetings()
+       // Greetings()
     }
 }
 
