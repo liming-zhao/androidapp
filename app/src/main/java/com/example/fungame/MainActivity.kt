@@ -22,9 +22,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +38,7 @@ import kotlin.random.Random
 
 @Composable
 fun OnboardingScreen(
-    onContinueClicked: () ->Unit,
+    onContinueClicked:  () ->Unit,
     modifier: Modifier = Modifier) {
     // TODO: This state should be hoisted
     var shouldShowOnboarding by remember { mutableStateOf(true) }
@@ -76,10 +78,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+/*
 fun generateRandomIntegers(n: Int, rangeStart: Int = 2, rangeEnd: Int = 14): List<Int> {
     return List(n) { Random.nextInt(rangeStart, rangeEnd + 1) }
 }
+*
+ */
+
+
+
+fun generateRandomIntegers(
+    n: Int,
+    rangeStart: Int = 2,
+    rangeEnd: Int = 14
+): Array<Int> {
+    return List(n) { Random.nextInt(rangeStart, rangeEnd + 1) }.toTypedArray()
+    }
+
+
 
 fun intToString(n: Int): String {
     val stringArray = arrayOf("J","Q","K","A")
@@ -104,20 +120,30 @@ fun MyApp(modifier: Modifier = Modifier){
 
     var mappingFun: (Int) -> String = {num -> intToString(num) }
     var shouldShowOnboarding by remember {mutableStateOf(true)}
-    var text by remember { mutableStateOf("Hello") }
+    var text by remember { mutableStateOf("") }
     var result by remember { mutableStateOf(false) }
+    //var mylist: List<String> = listOf<String> ("1","2","3","4")
+    var mylist = remember { mutableStateListOf("1", "2", "3", "4") }
 
-
-      Surface(modifier)
+    Surface(modifier)
       {
           Column(modifier = Modifier.padding((24.dp))) {
 
-              OnboardingScreen(onContinueClicked = { shouldShowOnboarding = !shouldShowOnboarding})
-              if(shouldShowOnboarding) {
+             // OnboardingScreen(onContinueClicked = { shouldShowOnboarding = !shouldShowOnboarding})
+
+                   OnboardingScreen(onContinueClicked = {
+                       val newItems = generateRandomIntegers(4).map(mappingFun)
+                       mylist.clear()
+                       mylist.addAll(newItems)
 
 
 
-                  val mylist: List<String> = generateRandomIntegers(4).map(mappingFun)
+                   })
+              //if(shouldShowOnboarding) {
+
+
+
+                  //val mylist: List<String> = generateRandomIntegers(4).map(mappingFun)
 
                   if(result) {
                       Text(
@@ -131,11 +157,10 @@ fun MyApp(modifier: Modifier = Modifier){
                       onTextChange = { text = it},
                       onClick = {
                           result = ( (24.0 == evaluateMathExpression(text)) )
-
                       }
                       )
 
-              }
+              //}
           }
       }
     }
