@@ -3,6 +3,7 @@ package com.example.fungame
 // ...
 
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -167,18 +171,47 @@ private fun Greetings(
     }
 
 
-    Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 25.dp)) {
-        for (name in names) {
+
+
+
+
+
+
+    LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
+        items(items = names) { name ->
             Card(name = name)
         }
     }
+
+
+    /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 25.dp)) {
+        for (name in names) {
+            Card(name = name)
+        }
+    }*/
 }
+
+
+fun getCardResId(rank: String, suit: String, context: Context): Int {
+    val resourceName  =  "card${rank}_of_${suit}";
+    val imageResource =  context.resources.getIdentifier(resourceName, "drawable", context.packageName);
+    return imageResource;
+}
+
+
+
+/*fun getImageName(name: String): Int
+{
+    getResources().getIdentifier(name, "id", getPackageName());
+    return 0;
+}*/
 
 
 @Composable
 fun Card(name: String, modifier: Modifier = Modifier) {
     val expanded = remember {mutableStateOf(false)}
     val extrapadding = if (expanded.value) 48.dp else 0.dp
+    val idv = getCardResId("3","clubs", context = LocalContext.current )
     Surface(color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical=14.dp,horizontal=8.dp)) {
         Row(modifier = Modifier.padding((48.dp))) {
@@ -186,9 +219,9 @@ fun Card(name: String, modifier: Modifier = Modifier) {
 
             {
                 Image(
-                    painterResource(id=R.drawable.card2_of_clubs),
+                    //#painterResource(id=R.drawable.card2_of_clubs),
+                    painterResource(id=idv),
                     contentDescription = null,
-
                     modifier = Modifier.size(200.dp)
                 )
 
