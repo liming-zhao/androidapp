@@ -97,7 +97,7 @@ fun generateRandomIntegers(
 
 
 fun intToString(n: Int): String {
-    val stringArray = arrayOf("J","Q","K","A")
+    val stringArray = arrayOf("jack","queen","king","ace")
     if(n > 0 && n <=10) {
         return "$n"
     }
@@ -121,7 +121,7 @@ fun MyApp(modifier: Modifier = Modifier){
     var shouldShowOnboarding by remember {mutableStateOf(true)}
     var text by remember { mutableStateOf("") }
     var result by remember { mutableStateOf(false) }
-    var mylist = remember { mutableStateListOf("1", "2", "3", "4") }
+    var mylist = remember { mutableStateListOf("2", "3", "4") }
 
     Surface(modifier)
       {
@@ -211,7 +211,7 @@ fun getCardResId(rank: String, suit: String, context: Context): Int {
 fun Card(name: String, modifier: Modifier = Modifier) {
     val expanded = remember {mutableStateOf(false)}
     val extrapadding = if (expanded.value) 48.dp else 0.dp
-    val idv = getCardResId("3","clubs", context = LocalContext.current )
+    val idv = getCardResId(name,"clubs", context = LocalContext.current )
     Surface(color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical=14.dp,horizontal=8.dp)) {
         Row(modifier = Modifier.padding((48.dp))) {
@@ -228,10 +228,6 @@ fun Card(name: String, modifier: Modifier = Modifier) {
                 Text(
                     text = "Hello ",
                 )
-
-
-
-
 
                 Text(text = "       $name")
             }
