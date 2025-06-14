@@ -148,11 +148,13 @@ fun MyApp(modifier: Modifier = Modifier){
       {
           Column(modifier = Modifier.padding((24.dp))) {
 
-                   OnboardingScreen(onContinueClicked = {
+                   /*OnboardingScreen(onContinueClicked = {
                        val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
                        mylist.clear()
                        mylist.addAll(newItems)
                    })
+
+                    */
 
                   if(result) {
                       Text(
@@ -166,6 +168,11 @@ fun MyApp(modifier: Modifier = Modifier){
                       onTextChange = { text = it},
                       onClick = {
                           result = ( (24.0 == evaluateMathExpression(text)) )
+                      },
+                      onClickContinue = {
+                          val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
+                          mylist.clear()
+                          mylist.addAll(newItems)
                       }
                       )
           }
@@ -178,7 +185,8 @@ private fun Greetings(
     names: List<CardVal> = listOf(CardVal("2","clubs")),
     text:String,
     onTextChange:(String)->Unit,
-    onClick: ()->Unit
+    onClick: ()->Unit,
+    onClickContinue: ()->Unit
 ) {
 
     TextField(
@@ -186,10 +194,16 @@ private fun Greetings(
         onValueChange = onTextChange,
         label = {Text("Label")}
     )
+    Row(modifier = Modifier.padding((8.dp))) {
 
-    Button(onClick = onClick){
-        Text("Check")
+        Button(onClick = onClick) {
+            Text("Check")
+        }
+        Button(onClick = onClickContinue) {
+            Text("Continue")
+        }
     }
+
 
     LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
         items(items = names) { name ->
