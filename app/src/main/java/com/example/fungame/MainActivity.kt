@@ -42,7 +42,6 @@ import com.example.fungame.ui.theme.FunGameTheme
 import net.objecthunter.exp4j.ExpressionBuilder
 import kotlin.random.Random
 
-
 @Composable
 fun OnboardingScreen(
     onContinueClicked:  () ->Unit,
@@ -52,12 +51,12 @@ fun OnboardingScreen(
 
     Column(
         //modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Welcome to the Basics Codelab!")
+        //Text("Welcome to the Basics Codelab!")
         Button(
-            modifier = Modifier.padding(vertical = 24.dp),
+            modifier = Modifier.padding(vertical = 0.dp),
             onClick = onContinueClicked
         ) {
             Text("Continue")
@@ -86,6 +85,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+data class CardVal(val name: String, val suit: String)
+
 fun generateRandomIntegers(
     n: Int,
     rangeStart: Int = 2,
@@ -94,7 +96,27 @@ fun generateRandomIntegers(
     return List(n) { Random.nextInt(rangeStart, rangeEnd + 1) }.toTypedArray()
     }
 
+fun generateSuit(
+    n: Int,
+    rangeStart: Int = 1,
+    rangeEnd: Int = 4
+): Array<String> {
 
+    var suitArr = arrayOf("clubs","hearts","spades","diamonds")
+
+    return List(n) { suitArr[Random.nextInt(rangeStart, rangeEnd + 1) - 1] }.toTypedArray()
+}
+
+fun generateRandomCardVal(n : Int): Array<CardVal>
+{
+    var mappingFun: (Int) -> String = {num -> intToString(num) }
+    val names = generateRandomIntegers(n).map(mappingFun);
+    val suit = generateSuit(n);
+
+    val cardvals = Array<CardVal>(n){i->CardVal(names[i],suit[i])}
+
+    return cardvals;
+}
 
 fun intToString(n: Int): String {
     val stringArray = arrayOf("jack","queen","king","ace")
@@ -103,7 +125,6 @@ fun intToString(n: Int): String {
     }
     else return stringArray[n-11];
 }
-
 
 fun evaluateMathExpression(expression: String): Double? {
     return try {
@@ -121,14 +142,14 @@ fun MyApp(modifier: Modifier = Modifier){
     var shouldShowOnboarding by remember {mutableStateOf(true)}
     var text by remember { mutableStateOf("") }
     var result by remember { mutableStateOf(false) }
-    var mylist = remember { mutableStateListOf("2", "3", "4") }
+    var mylist = remember { mutableStateListOf(CardVal("2","clubs")) }
 
     Surface(modifier)
       {
           Column(modifier = Modifier.padding((24.dp))) {
 
                    OnboardingScreen(onContinueClicked = {
-                       val newItems = generateRandomIntegers(4).map(mappingFun)
+                       val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
                        mylist.clear()
                        mylist.addAll(newItems)
                    })
@@ -154,7 +175,7 @@ fun MyApp(modifier: Modifier = Modifier){
 @Composable
 private fun Greetings(
     modifier: Modifier = Modifier,
-    names: List<String> = listOf("World", "Compose"),
+    names: List<CardVal> = listOf(CardVal("2","clubs")),
     text:String,
     onTextChange:(String)->Unit,
     onClick: ()->Unit
@@ -170,20 +191,11 @@ private fun Greetings(
         Text("Check")
     }
 
-
-
-
-
-
-
-
     LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
         items(items = names) { name ->
-            Card(name = name)
+            Card(name = name.name.toString(),suit = name.suit)
         }
     }
-
-
     /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 25.dp)) {
         for (name in names) {
             Card(name = name)
@@ -198,23 +210,20 @@ fun getCardResId(rank: String, suit: String, context: Context): Int {
     return imageResource;
 }
 
-
-
 /*fun getImageName(name: String): Int
 {
     getResources().getIdentifier(name, "id", getPackageName());
     return 0;
 }*/
 
-
 @Composable
-fun Card(name: String, modifier: Modifier = Modifier) {
+fun Card(name: String, suit:String="clubs", modifier: Modifier = Modifier) {
     val expanded = remember {mutableStateOf(false)}
     val extrapadding = if (expanded.value) 48.dp else 0.dp
-    val idv = getCardResId(name,"clubs", context = LocalContext.current )
+    val idv = getCardResId(name,suit, context = LocalContext.current )
     Surface(color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(vertical=14.dp,horizontal=8.dp)) {
-        Row(modifier = Modifier.padding((48.dp))) {
+        modifier = modifier.padding(vertical=0.dp,horizontal=12.dp)) {
+        Row(modifier = Modifier.padding((8.dp))) {
             Column(modifier = modifier.padding(bottom = extrapadding))
 
             {
@@ -222,14 +231,14 @@ fun Card(name: String, modifier: Modifier = Modifier) {
                     //#painterResource(id=R.drawable.card2_of_clubs),
                     painterResource(id=idv),
                     contentDescription = null,
-                    modifier = Modifier.size(200.dp)
+                    modifier = Modifier.size(180.dp)
                 )
 
-                Text(
+                /*Text(
                     text = "Hello ",
                 )
 
-                Text(text = "       $name")
+                Text(text = "       $name")*/
             }
 
         }
