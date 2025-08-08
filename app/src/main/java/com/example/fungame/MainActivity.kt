@@ -142,7 +142,11 @@ fun MyApp(modifier: Modifier = Modifier){
     var shouldShowOnboarding by remember {mutableStateOf(true)}
     var text by remember { mutableStateOf("") }
     var result by remember { mutableStateOf(false) }
+    val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
+
     var mylist = remember { mutableStateListOf(CardVal("2","clubs")) }
+    mylist.clear()
+    mylist.addAll(newItems)
 
     Surface(modifier)
       {
