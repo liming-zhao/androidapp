@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -38,8 +39,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.fungame.ui.theme.FunGameTheme
 
 import net.objecthunter.exp4j.ExpressionBuilder
@@ -199,7 +202,11 @@ private fun Greetings(
     TextField(
         value = text,
         onValueChange = onTextChange,
-        label = {Text("Label")}
+        modifier = modifier.width(250.dp),
+        textStyle = TextStyle(
+            fontSize = 20.sp // 👈 Change font size here
+        )
+
     )
     Row(modifier = Modifier.padding((8.dp))) {
 
@@ -211,7 +218,9 @@ private fun Greetings(
         }
     }
 
-       LazyVerticalGrid(
+
+
+    LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         modifier = modifier.padding(4.dp)
     ) {
@@ -220,6 +229,12 @@ private fun Greetings(
         }
     }
 
+
+    /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 25.dp)) {
+        for (name in names) {
+            Card(name = name)
+        }
+    }*/
 }
 
 
