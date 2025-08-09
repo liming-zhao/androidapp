@@ -147,6 +147,7 @@ fun MyApp(modifier: Modifier = Modifier){
     var mappingFun: (Int) -> String = {num -> intToString(num) }
     var shouldShowOnboarding by remember {mutableStateOf(true)}
     var text by remember { mutableStateOf("") }
+    var output by remember { mutableStateOf("") }
     var result by remember { mutableStateOf(false) }
     val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
 
@@ -165,24 +166,35 @@ fun MyApp(modifier: Modifier = Modifier){
                    })
 
                     */
-
+              /*
                   if(result) {
                       Text(
                           text = "correct ",
                       )
-                  }
+                  }*/
 
                   Greetings(
                       names=mylist,
                       text=text,
+                      output=output,
                       onTextChange = { text = it},
                       onClick = {
                           result = ( (24.0 == evaluateMathExpression(text)) )
+                          if(result)
+                          {
+                              output = "Correct"
+                          }
+                          else
+                          {
+                              output = "Wrong"
+                          }
                       },
                       onClickContinue = {
                           val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
                           mylist.clear()
                           mylist.addAll(newItems)
+                          output = "Please share your caculation"
+
                       }
                       )
           }
@@ -194,6 +206,7 @@ private fun Greetings(
     modifier: Modifier = Modifier,
     names: List<CardVal> = listOf(CardVal("2","clubs")),
     text:String,
+    output:String,
     onTextChange:(String)->Unit,
     onClick: ()->Unit,
     onClickContinue: ()->Unit
@@ -229,8 +242,13 @@ private fun Greetings(
         }
     }
 
+    Text(
+        text = output
 
-    /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 25.dp)) {
+    )
+
+
+    /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 2federation services5.dp)) {
         for (name in names) {
             Card(name = name)
         }
