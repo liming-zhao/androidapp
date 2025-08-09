@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -208,17 +211,15 @@ private fun Greetings(
         }
     }
 
-
-    LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
+       LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        modifier = modifier.padding(4.dp)
+    ) {
         items(items = names) { name ->
-            Card(name = name.name.toString(),suit = name.suit)
+            Card(name = name.name.toString(), suit = name.suit)
         }
     }
-    /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 25.dp)) {
-        for (name in names) {
-            Card(name = name)
-        }
-    }*/
+
 }
 
 
