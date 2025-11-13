@@ -8,12 +8,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -39,9 +47,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -151,6 +163,7 @@ fun MyApp(modifier: Modifier = Modifier){
     var text by remember { mutableStateOf("") }
     var output by remember { mutableStateOf("") }
     var result by remember { mutableStateOf(false) }
+    var valuetxt by remember {mutableStateOf(value ="")}
     val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
 
     var mylist = remember { mutableStateListOf(CardVal("2","clubs")) }
@@ -197,7 +210,8 @@ fun MyApp(modifier: Modifier = Modifier){
                           mylist.addAll(newItems)
                           output = "Please share your caculation"
 
-                      }
+                      },
+                      onImageClick = {input -> valuetxt = input;  text += valuetxt }
                       )
           }
       }
@@ -213,10 +227,13 @@ fun TextBox(
     //,
     //onSearchClick: () -> Unit
 ) {
-    TextField(
-        value = text,
-        onValueChange = onTextChange,
-        /*,leadingIcon = {
+
+    Surface(color = Color.Cyan)
+    {
+        TextField(
+            value = text,
+            onValueChange = onTextChange,
+            /*,leadingIcon = {
             IconButton(onClick = onSearchClick) {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -224,15 +241,48 @@ fun TextBox(
                 )
             }
         },*/
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedContainerColor = MaterialTheme.colorScheme.surface
-        ),
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 56.dp)
+            /*
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedContainerColor = MaterialTheme.colorScheme.surface
+            ),
+            modifier = modifier
+                .fillMaxWidth()
+                .heightIn(min = 56.dp)
+
+             */
+        )
+    }
+
+    /*Surface(color = Color.Cyan) {
+        Text(
+            text = "Hi, my name is test!",
+            modifier = modifier.padding(24.dp)
+        )
+    }*/
+}
+
+
+@Composable
+fun EditNumberField(
+    @StringRes label: Int,
+    @DrawableRes leadingIcon: Int,
+    keyboardOptions: KeyboardOptions,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        singleLine = true,
+        leadingIcon = { Icon(painter = painterResource(id = leadingIcon), null) },
+        modifier = modifier,
+        onValueChange = onValueChanged,
+        label = { Text(stringResource(label)) },
+        keyboardOptions = keyboardOptions
     )
 }
+
 
 
 
@@ -244,16 +294,11 @@ private fun Greetings(
     output:String,
     onTextChange:(String)->Unit,
     onClick: ()->Unit,
-    onClickContinue: ()->Unit
+    onClickContinue: ()->Unit,
+    onImageClick: (String) -> Unit
 ) {
 
-    TextBox(
-        text = text,
-        onTextChange = onTextChange,
-        //,
-        //onSearchClick = onClick, // or any function you'd like
-        modifier = Modifier.width(250.dp)
-    )
+
 
     Row(modifier = Modifier.padding((8.dp))) {
 
@@ -265,22 +310,30 @@ private fun Greetings(
         }
     }
 
-
-
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp),
-        modifier = modifier.padding(4.dp)
-    ) {
-        items(items = names) { name ->
-            Card(name = name.name.toString(), suit = name.suit)
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 128.dp),
+            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+            horizontalArrangement = Arrangement.spacedBy(0.dp),
+            verticalArrangement = Arrangement.spacedBy(0.dp)
+        ) {
+            items(items = names) { name ->
+                Card(name = name.name.toString(), suit = name.suit,  onImageClick = onImageClick )
+            }
         }
-    }
+
+
+    TextBox(
+        text = text,
+        onTextChange = onTextChange,
+        //,
+        //onSearchClick = onClick, // or any function you'd like
+        modifier = Modifier.width(250.dp)
+    )
 
     Text(
         text = output
 
     )
-
 
     /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 2federation services5.dp)) {
         for (name in names) {
@@ -303,7 +356,7 @@ fun getCardResId(rank: String, suit: String, context: Context): Int {
 }*/
 
 @Composable
-fun Card(name: String, suit:String="clubs", modifier: Modifier = Modifier) {
+fun Card(modifier: Modifier = Modifier, name: String, suit:String="clubs",  onImageClick: (String) -> Unit) {
     val expanded = remember {mutableStateOf(false)}
     val extrapadding = if (expanded.value) 48.dp else 0.dp
     val idv = getCardResId(name,suit, context = LocalContext.current )
@@ -317,7 +370,8 @@ fun Card(name: String, suit:String="clubs", modifier: Modifier = Modifier) {
                     //#painterResource(id=R.drawable.card2_of_clubs),
                     painterResource(id=idv),
                     contentDescription = null,
-                    modifier = Modifier.size(180.dp)
+                    modifier = Modifier.size(180.dp) .clickable {(onImageClick(name))}
+
                 )
 
                 /*Text(
