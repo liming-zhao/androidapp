@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -299,16 +300,16 @@ private fun Greetings(
 ) {
 
 
+    Column(modifier = Modifier.padding((24.dp))) {
+        Row(modifier = Modifier.padding((8.dp))) {
 
-    Row(modifier = Modifier.padding((8.dp))) {
-
-        Button(onClick = onClick) {
-            Text("Check")
+            Button(onClick = onClick) {
+                Text("Check")
+            }
+            Button(onClick = onClickContinue) {
+                Text("Continue")
+            }
         }
-        Button(onClick = onClickContinue) {
-            Text("Continue")
-        }
-    }
 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 128.dp),
@@ -317,23 +318,26 @@ private fun Greetings(
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             items(items = names) { name ->
-                Card(name = name.name.toString(), suit = name.suit,  onImageClick = onImageClick )
+                Card(name = name.name.toString(), suit = name.suit, onImageClick = onImageClick)
             }
         }
 
+        Spacer(Modifier.size(16.dp))
 
-    TextBox(
-        text = text,
-        onTextChange = onTextChange,
-        //,
-        //onSearchClick = onClick, // or any function you'd like
-        modifier = Modifier.width(250.dp)
-    )
 
-    Text(
-        text = output
+        TextBox(
+            text = text,
+            onTextChange = onTextChange,
+            //,
+            //onSearchClick = onClick, // or any function you'd like
+            modifier = Modifier.width(250.dp)
+        )
 
-    )
+        Text(
+            text = output
+
+        )
+    }
 
     /*Column(modifier = modifier.padding(vertical = 4.dp, horizontal = 2federation services5.dp)) {
         for (name in names) {
