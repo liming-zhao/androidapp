@@ -156,6 +156,11 @@ fun evaluateMathExpression(expression: String): Double? {
     }
 }
 
+
+fun isNumeric(toCheck: String): Boolean {
+    return toCheck.all { char -> char.isDigit() }
+}
+
 @Composable
 fun MyApp(modifier: Modifier = Modifier){
 
@@ -212,7 +217,16 @@ fun MyApp(modifier: Modifier = Modifier){
                           output = "Please share your caculation"
 
                       },
-                      onImageClick = {input -> valuetxt = input;  text += valuetxt }
+                      onImageClick = {input ->
+                          valuetxt = input;
+                          if(isNumeric(input)) {
+                              text += valuetxt;
+                          }
+                          else{
+                              text += "1";
+                          }
+
+                      }
                       )
           }
       }
