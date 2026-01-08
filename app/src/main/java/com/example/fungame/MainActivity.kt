@@ -167,10 +167,14 @@ fun MyApp(modifier: Modifier = Modifier){
     var mappingFun: (Int) -> String = {num -> intToString(num) }
     var shouldShowOnboarding by remember {mutableStateOf(true)}
     var text by remember { mutableStateOf("") }
+    var textlist = remember { mutableStateListOf<String>() }
     var output by remember { mutableStateOf("") }
     var result by remember { mutableStateOf(false) }
     var valuetxt by remember {mutableStateOf(value ="")}
     val newItems = generateRandomCardVal(4)//generateRandomIntegers(4).map(mappingFun)
+
+    var historyList = remember { mutableStateListOf(String()) }
+    var redoList =  remember { mutableStateListOf(String()) }
 
     var mylist = remember { mutableStateListOf(CardVal("2","clubs")) }
     mylist.clear()
@@ -198,7 +202,7 @@ fun MyApp(modifier: Modifier = Modifier){
                       names=mylist,
                       text=text,
                       output=output,
-                      onTextChange = { text = it},
+                      onTextChange = { text = it; historyList.add(text); redoList.clear()},
                       onClick = {
                           result = ( (24.0 == evaluateMathExpression(text)) )
                           if(result)
@@ -221,12 +225,32 @@ fun MyApp(modifier: Modifier = Modifier){
                           valuetxt = input;
                           if(isNumeric(input)) {
                               text += valuetxt;
+                              //textlist.add(valuetxt);
                           }
                           else{
                               text += "1";
                           }
+                         historyList.add(text)
+
+                      },
+
+                      OnClickUndo = {
+                           text = historyList.get(historyList.size - 2);
+                           redoList.add(historyList.get(historyList.size - 1));
+                          if (historyList.isNotEmpty()) {
+                              historyList.removeAt(historyList.lastIndex)
+                          }
+                      },
+
+                      OnClickRedo = {
+                          if(redoList.isNotEmpty()) {
+                              text = redoList.get(redoList.size - 1);
+                              redoList.removeAt(redoList.lastIndex)
+                          }
 
                       }
+
+
                       )
           }
       }
@@ -310,7 +334,9 @@ private fun Greetings(
     onTextChange:(String)->Unit,
     onClick: ()->Unit,
     onClickContinue: ()->Unit,
-    onImageClick: (String) -> Unit
+    onImageClick: (String) -> Unit,
+    OnClickUndo: () -> Unit,
+    OnClickRedo: () -> Unit
 ) {
 
 
@@ -323,6 +349,17 @@ private fun Greetings(
             Button(onClick = onClickContinue) {
                 Text("Continue")
             }
+
+            }
+            Row(modifier = Modifier.padding((8.dp))) {
+
+                Button(onClick = OnClickUndo) {
+                    Text("Undo")
+                }
+                Button(onClick = OnClickRedo) {
+                    Text("Redo")
+                }
+
         }
 
         LazyVerticalGrid(
